@@ -1,0 +1,7 @@
+header {
+    & img {
+        display: flex;
+        padding: 2rem;
+        margin: auto;
+    }
+}
