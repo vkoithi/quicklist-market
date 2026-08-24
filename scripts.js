@@ -1,6 +1,7 @@
 const form = document.querySelector("form")
 const input = document.getElementById("newItem")
 const list = document.querySelector("ul")
+const alert = document.querySelector(".alert")
 let itemId = 0
 
 
@@ -36,7 +37,12 @@ form.onsubmit = (event) => {
     button.setAttribute("aria-label","Remover item")                
     button.addEventListener("click", () =>  {
         item.remove()
+        alert.classList.remove("alert-in")
     })
+
+    setTimeout(() =>{
+        classList.add("alert-out")
+    }, 2000)
 
     item.append(checkbox, label, button)
 

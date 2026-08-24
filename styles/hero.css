@@ -95,6 +95,37 @@ main {
             }
         }
     }
+
+    .alert {
+        display: flex;
+        background-color: var(--color-danger);
+        border-radius: 8px;
+        gap: 0.875rem;
+
+        font: var(--tt-link);
+        color: var(--always-white);
+        
+        margin-top: 2rem;
+        padding: 0.5rem;
+
+        align-items: center;
+        
+        & span {
+            flex: 1;
+        }
+
+        & button {
+            background: none;
+            border: none;
+            color: var(--always-white);
+            cursor: pointer;
+        }
+    }
+
+    .hidden {
+        display: none;
+    }
+  
 }
 
 @media (min-width: 48rem) {
