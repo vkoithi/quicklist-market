@@ -37,11 +37,17 @@ form.onsubmit = (event) => {
     button.setAttribute("aria-label","Remover item")                
     button.addEventListener("click", () =>  {
         item.remove()
-        alert.classList.remove("alert-in")
-    })
+        alert.classList.remove("hidden")
+        alert.classList.add("alert-in")
 
-    setTimeout(() =>{
-        classList.add("alert-out")
+        setTimeout(() =>{
+            alert.classList.remove("alert-in")
+            alert.classList.add("alert-out")
+
+            setTimeout(() => {
+                alert.classList.add("hidden")
+                alert.classList.remove("alert-out")
+        }, 300)
     }, 2000)
 
     item.append(checkbox, label, button)
