@@ -131,4 +131,4 @@ Entre os elementos estilizados estão:
 
 ## 💻 Projeto
 
-[Acesse o projeto finalizado, online.](COLOQUE-AQUI-O-LINK-DO-GITHUB-PAGES)
+[Acesse o projeto finalizado, online.](https://vkoithi.github.io/quicklist-market/)
