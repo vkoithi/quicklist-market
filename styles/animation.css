@@ -1,31 +1,47 @@
 @keyframes alert-in {
-    from {
-        opacity: 0;
-        transform: translateY(0.5rem);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes alert-out {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
 
-    to {
-        opacity: 0;
-        transform: translateY(0.5rem);
-    }
+  to {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .alert-in {
-    animation: alert-in 300ms ease forwards;
+  animation: alert-in 450ms ease forwards;
 }
 
 .alert-out {
-    animation: alert-out 300ms ease forwards;
+  animation: alert-out 500ms ease forwards;
+}
+
+.item-in {
+  animation: item-in 250ms ease-out;
 }
