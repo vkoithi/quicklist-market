@@ -2,6 +2,8 @@ const form = document.querySelector("form")
 
 const input = document.getElementById("newItem")
 
+const unitSelect = document.getElementById("unit")
+
 const list = document.querySelector("ul")
 
 const alert = document.querySelector(".alert")
@@ -20,6 +22,8 @@ let items =
 
 function createItem(itemData) {
   const item = document.createElement("li")
+
+  const isKg = itemData.unit === "kg"
 
   item.classList.add("item-in")
 
@@ -49,8 +53,11 @@ function createItem(itemData) {
   // Texto da quantidade
   const quantityLabel = document.createElement("span")
 
-  quantityLabel.textContent = "Quantidade:"
-
+  if (isKg) {
+    quantityLabel.textContent = "Kg:"
+  } else {
+    quantityLabel.textContent = "Quantidade:"
+  }
 
   // Botão diminuir
   const decreaseButton = document.createElement("button")
@@ -69,8 +76,15 @@ function createItem(itemData) {
   const quantity = document.createElement("input")
 
   quantity.type = "number"
-  quantity.min = "1"
-  quantity.step = "1"
+  
+  if (isKg) {
+    quantity.min = "0.01"
+    quantity.step = "0.01"
+  } else {
+    quantity.min = "1"
+    quantity.step = "1"
+  }
+
   quantity.value = itemData.quantity
 
   quantity.classList.add("quantity-input")
@@ -96,22 +110,33 @@ function createItem(itemData) {
 
   // Diminuir quantidade
   decreaseButton.addEventListener("click", () => {
-    if (itemData.quantity > 1) {
-      itemData.quantity--
-
-      quantity.value = itemData.quantity
-
-      localStorage.setItem(
-        "quicklist-items",
-        JSON.stringify(items)
-      )
+    if (isKg) {
+      if (itemData.quantity > 0.1) {
+        itemData.quantity = 
+           Number((itemData.quantity - 0.1).toFixed(2))
+      }
+    } else {
+      if (itemData.quantity > 1) {
+        itemData.quantity--
+      }
     }
-  })
 
+    quantity.value = itemData.quantity
+    
+    localStorage.setItem(
+      "quicklist-items",
+      JSON.stringify(items)
+    )
+  })
 
   // Aumentar quantidade
   increaseButton.addEventListener("click", () => {
-    itemData.quantity++
+    if (isKg) {
+      itemData.quantity = 
+        Number((itemData.quantity + 0.1).toFixed(2))
+    } else {
+      itemData.quantity++
+    }
 
     quantity.value = itemData.quantity
 
@@ -121,27 +146,34 @@ function createItem(itemData) {
     )
   })
 
-
   // Alterar quantidade manualmente
   quantity.addEventListener("change", () => {
     const newQuantity = Number(quantity.value)
 
-    if (
-      newQuantity < 1 ||
-      !Number.isInteger(newQuantity)
-    ) {
-      itemData.quantity = 1
-      quantity.value = 1
+    if (isKg) {
+      if (newQuantity <= 0) {
+        itemData.quantity = 0.1
+        quantity.value = 0.1
+      } else {
+        itemData.quantity = newQuantity 
+      }
     } else {
-      itemData.quantity = newQuantity
+        if (
+          newQuantity < 1 ||
+          !Number.isInteger(newQuantity)
+        ) {
+          itemData.quantity = 1
+          quantity.value = 1 
+        } else {
+          itemData.quantity = newQuantity
+        }
     }
 
-    localStorage.setItem(
+    localStorage.setItem (
       "quicklist-items",
       JSON.stringify(items)
     )
   })
-
 
   // Controles da quantidade
   const quantityControls = document.createElement("div")
@@ -299,11 +331,16 @@ form.onsubmit = (event) => {
     value.charAt(0).toUpperCase() +
     value.slice(1)
 
+    console.log("Unidade Selecionada:", unitSelect.value)
+
   const itemData = {
     name: formattedValue,
     checked: false,
-    quantity: 1
+    quantity: 1,
+    unit: unitSelect.value
   }
+
+  console.log("Item criado", itemData)
 
   items.push(itemData)
 
@@ -315,6 +352,7 @@ form.onsubmit = (event) => {
   createItem(itemData)
 
   input.value = ""
+  unitSelect.value = "un"
   input.focus()
 }
 

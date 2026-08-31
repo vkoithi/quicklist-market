@@ -20,7 +20,7 @@
             Voltar
         </a>
 
-        <h1>Compras da Semana</h1>
+        <h1>Lista de Compras</h1>
 
         <form>
             <input 
@@ -28,6 +28,12 @@
             id="newItem" 
             placeholder="Adicione um novo item"
             aria-label="Novo item">
+
+            
+            <select id="unit" aria-label="Unidade de medida">
+                <option value="un">Unidade</option>
+                <option value="kg">Kg</option>
+            </select>
 
             <button type="submit" id="add-item">Adicionar item</button>
         </form>

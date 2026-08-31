@@ -21,31 +21,59 @@ main {
     }
   }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 2rem;
-        gap: 1rem;
+  form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2rem;
+      gap: 1rem;
 
-        & input {
-            font: var(--tt-link);
-            font-size: 1rem;
+      & input {
+          font: var(--tt-link);
+          font-size: 1rem;
 
-            background-color: var(--background-secondary);
-            border-radius: 10px;
-            border: 2px solid var(--border-primary);
-            padding: 0.8rem;
-        }
+          background-color: var(--background-secondary);
+          border-radius: 10px;
+          border: 2px solid var(--border-primary);
+          padding: 0.8rem;
+      }
 
-        & button {
-            font: var(--tt-link);
-            color: var(--always-white);
-            background-color: var(--color-brand);
-            border: none;
-            border-radius: 10px;
-            padding: 0.7rem;
-            cursor: pointer;
-        }
+      & select {
+        font-family: var(--font-family);
+        font-size: 1rem;
+        font-weight: 500;
+
+        color: var(--content-primary);
+          background-color: var(--background-secondary);
+
+          border: 2px solid var(--border-primary);
+          border-radius: 10px;
+
+          padding: 0.8rem 2.5rem 0.8rem 0.8rem;
+
+          cursor: pointer;
+          outline: none;
+
+          appearance: none;
+
+          background-image: url("../assets/icons/chevron-down.svg");
+          background-repeat: no-repeat;
+          background-position: right 0.8rem center;
+          background-size: 1rem;
+      }
+
+      & select:focus {
+          border-color: var(--color-brand);
+      }
+
+      & button {
+          font: var(--tt-link);
+          color: var(--always-white);
+          background-color: var(--color-brand);
+          border: none;
+          border-radius: 10px;
+          padding: 0.7rem;
+          cursor: pointer;
+      }
     }   
 }
 
@@ -210,14 +238,9 @@ main {
             & input {
                 flex: 1;
             }
-        }
 
-        & li {
-            flex-wrap: nowrap;
-
-            .quantity-controls {
-                order: 0;
-                flex-basis: auto;
+            & select {
+                width: 8rem;
             }
         }
     }
