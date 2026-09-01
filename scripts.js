@@ -12,6 +12,8 @@ const closeAlert = document.querySelector(".close-alert")
 
 const clearList = document.getElementById("clear-list")
 
+const totalText =  document.getElementById("total-value")
+
 let alertTimer
 
 let itemId = 0
@@ -19,14 +21,45 @@ let itemId = 0
 let items =
   JSON.parse(localStorage.getItem("quicklist-items")) || []
 
+function updateTotal() {
+    let total = 0
+
+    items.forEach((itemData) => {
+        total += itemData.quantity * itemData.price
+    })
+
+    totalText.textContent =
+        total.toLocaleString("pt-BR", {
+            style: "curreny",
+            currency: "BRL"
+        })
+
+    updateTotal()    
+}  
 
 function createItem(itemData) {
   const item = document.createElement("li")
 
   const isKg = itemData.unit === "kg"
 
+  if (itemData.price === undefined) {
+    itemData.price = 0
+  }
+
   item.classList.add("item-in")
 
+  const subtotalText = document.createElement("strong")
+  subtotalText.classList.add("item-subtotal")
+
+  function updateSubTotal() {
+    const subtotalValue = itemData.quantity * itemData.price
+
+    subtotalText.textContent = 
+        `Subtotal: ${subtotalValue.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })}`
+  }
 
   // Checkbox
   const checkbox = document.createElement("input")
@@ -122,6 +155,8 @@ function createItem(itemData) {
     }
 
     quantity.value = itemData.quantity
+
+    updateSubTotal()
     
     localStorage.setItem(
       "quicklist-items",
@@ -139,6 +174,8 @@ function createItem(itemData) {
     }
 
     quantity.value = itemData.quantity
+
+    updateSubTotal()
 
     localStorage.setItem(
       "quicklist-items",
@@ -169,6 +206,8 @@ function createItem(itemData) {
         }
     }
 
+    updateSubTotal()
+
     localStorage.setItem (
       "quicklist-items",
       JSON.stringify(items)
@@ -187,7 +226,61 @@ function createItem(itemData) {
     increaseButton
   )
 
+  // Preço do produto
 
+const priceLabel = document.createElement("span")
+
+if (isKg) {
+  priceLabel.textContent = "Preço/kg: R$"
+} else {
+  priceLabel.textContent = "Preço/un: R$"
+}
+
+const priceInput = document.createElement("input")
+
+priceInput.type = "number"
+priceInput.min = "0"
+priceInput.step = "0.01"
+priceInput.placeholder = "0.00"
+
+priceInput.classList.add("price-input")
+
+priceInput.setAttribute(
+  "aria-label",
+  `Preço de ${itemData.name}`
+)
+
+if (itemData.price > 0) {
+  priceInput.value = itemData.price
+}
+
+priceInput.addEventListener("change", () => {
+  const newPrice = Number(priceInput.value)
+
+  if (newPrice < 0 || Number.isNaN(newPrice)) {
+    itemData.price = 0
+    priceInput.value = ""
+  } else {
+    itemData.price = newPrice
+  }
+
+  updateSubTotal()
+
+  localStorage.setItem(
+    "quicklist-items",
+    JSON.stringify(items)
+  )
+})
+
+const priceControls = document.createElement("div")
+
+priceControls.classList.add("price-controls")
+
+priceControls.append(
+  priceLabel,
+  priceInput
+)
+  
   // Botão remover
   const removeButton = document.createElement("button")
 
@@ -298,18 +391,33 @@ function createItem(itemData) {
     }, 3000)
   })
 
+  const itemTop = document.createElement("div")
+  itemTop.classList.add("item-top")
 
-  // Adiciona tudo dentro do <li>
-  item.append(
+  const itemDetails = document.createElement("div")
+  itemDetails.classList.add("item-details")
+
+  itemTop.append(
     checkbox,
     label,
-    quantityControls,
     removeButton
+  )
+
+  updateSubTotal()
+
+  itemDetails.append(
+    quantityControls,
+    priceControls,
+    subtotalText
+  )
+
+  item.append(
+    itemTop,
+    itemDetails
   )
 
   list.append(item)
 }
-
 
 // Carrega os itens salvos
 items.forEach((itemData) => {
@@ -331,16 +439,13 @@ form.onsubmit = (event) => {
     value.charAt(0).toUpperCase() +
     value.slice(1)
 
-    console.log("Unidade Selecionada:", unitSelect.value)
-
   const itemData = {
     name: formattedValue,
     checked: false,
     quantity: 1,
-    unit: unitSelect.value
+    unit: unitSelect.value,
+    price: 0
   }
-
-  console.log("Item criado", itemData)
 
   items.push(itemData)
 
