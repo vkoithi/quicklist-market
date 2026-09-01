@@ -441,11 +441,14 @@ priceControls.append(
 }
 
 // Carrega os itens salvos
+loadSharedList()
+
 items.forEach((itemData) => {
   createItem(itemData)
 })
 
 updateTotal()
+
 
 // Adicionar novo item
 form.onsubmit = (event) => {
@@ -539,3 +542,29 @@ shareList.addEventListener("click", async () => {
     }
   }
 })
+
+function loadSharedList() {
+  const hash = window.location.hash
+
+  if (!hash.startsWith("#list=")) {
+    return
+  }
+
+  const encodedList = hash.replace("#list=", "")
+
+  try {
+    const decodedList = decodeURIComponent(encodedList)
+
+    const sharedItems = JSON.parse(decodedList)
+
+    items = sharedItems
+
+    localStorage.setItem(
+      "quicklist-items",
+      JSON.stringify(items)
+    )
+
+  } catch (error) {
+    showAlert("Não foi possível carregar a lista compartilhada")
+  }
+}
