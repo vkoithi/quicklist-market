@@ -287,6 +287,44 @@ main {
     order: 1;
   }
 
+  .purchase-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 1.5rem;
+    padding: 1rem;
+
+    background-color: var(--background-secondary);
+    border-radius: 9px;
+
+    font: var(--tt-label);
+
+    & strong {
+      color: var(--color-brand);
+    }
+ }
+
+ #share-list {
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: var(--color-share);
+    color: var(--always-white);
+
+    font: var(--tt-link);
+
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  #share-list:hover {
+    background-color: var(--color-share-hover);
+  }
+
   #clear-list {
     margin-top: 1rem;
     padding: 0.6rem 1rem;

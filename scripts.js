@@ -8,7 +8,11 @@ const list = document.querySelector("ul")
 
 const alert = document.querySelector(".alert")
 
+const alertMessage = document.querySelector(".alert span")
+
 const closeAlert = document.querySelector(".close-alert")
+
+const shareList = document.getElementById("share-list")
 
 const clearList = document.getElementById("clear-list")
 
@@ -30,12 +34,38 @@ function updateTotal() {
 
     totalText.textContent =
         total.toLocaleString("pt-BR", {
-            style: "curreny",
+            style: "currency",
             currency: "BRL"
         })
-
-    updateTotal()    
 }  
+
+function showAlert(message) {
+  clearTimeout(alertTimer)
+
+  alertMessage.textContent = message
+
+  alert.classList.remove("hidden")
+  alert.classList.remove("alert-out")
+  alert.classList.add("alert-in")
+
+  alertTimer = setTimeout(() => {
+    alert.classList.remove("alert-in")
+    alert.classList.add("alert-out")
+
+    setTimeout(() => {
+      alert.classList.add("hidden")
+      alert.classList.remove("alert-out")
+    }, 500)
+  }, 3000)
+}
+
+function createShareLink() {
+  const listData = JSON.stringify(items)
+  
+  const encodedList = encodeURIComponent(listData)
+
+  return `${window.location.origin}${window.location.pathname}#list=${encodedList}`
+}
 
 function createItem(itemData) {
   const item = document.createElement("li")
@@ -51,7 +81,7 @@ function createItem(itemData) {
   const subtotalText = document.createElement("strong")
   subtotalText.classList.add("item-subtotal")
 
-  function updateSubTotal() {
+  function updateSubtotal() {
     const subtotalValue = itemData.quantity * itemData.price
 
     subtotalText.textContent = 
@@ -156,7 +186,8 @@ function createItem(itemData) {
 
     quantity.value = itemData.quantity
 
-    updateSubTotal()
+    updateSubtotal()
+    updateTotal()
     
     localStorage.setItem(
       "quicklist-items",
@@ -175,7 +206,8 @@ function createItem(itemData) {
 
     quantity.value = itemData.quantity
 
-    updateSubTotal()
+    updateSubtotal()
+    updateTotal()
 
     localStorage.setItem(
       "quicklist-items",
@@ -206,7 +238,8 @@ function createItem(itemData) {
         }
     }
 
-    updateSubTotal()
+    updateSubtotal()
+    updateTotal()
 
     localStorage.setItem (
       "quicklist-items",
@@ -264,7 +297,8 @@ priceInput.addEventListener("change", () => {
     itemData.price = newPrice
   }
 
-  updateSubTotal()
+  updateSubtotal()
+  updateTotal()
 
   localStorage.setItem(
     "quicklist-items",
@@ -373,37 +407,24 @@ priceControls.append(
 
     item.remove()
 
-    clearTimeout(alertTimer)
+    updateTotal()
 
-    alert.classList.remove("hidden")
-    alert.classList.remove("alert-out")
-    alert.classList.add("alert-in")
-
-    alertTimer = setTimeout(() => {
-      alert.classList.remove("alert-in")
-      alert.classList.add("alert-out")
-
-      setTimeout(() => {
-        alert.classList.add("hidden")
-        alert.classList.remove("alert-out")
-      }, 500)
-
-    }, 3000)
+    showAlert("O item foi removido da lista")
   })
 
   const itemTop = document.createElement("div")
-  itemTop.classList.add("item-top")
+    itemTop.classList.add("item-top")
 
   const itemDetails = document.createElement("div")
-  itemDetails.classList.add("item-details")
+    itemDetails.classList.add("item-details")
 
-  itemTop.append(
-    checkbox,
-    label,
-    removeButton
-  )
+    itemTop.append(
+      checkbox,
+      label,
+      removeButton
+    )
 
-  updateSubTotal()
+  updateSubtotal()
 
   itemDetails.append(
     quantityControls,
@@ -424,6 +445,7 @@ items.forEach((itemData) => {
   createItem(itemData)
 })
 
+updateTotal()
 
 // Adicionar novo item
 form.onsubmit = (event) => {
@@ -456,6 +478,8 @@ form.onsubmit = (event) => {
 
   createItem(itemData)
 
+  updateTotal()
+
   input.value = ""
   unitSelect.value = "un"
   input.focus()
@@ -469,6 +493,10 @@ clearList.addEventListener("click", () => {
   localStorage.removeItem("quicklist-items")
 
   list.innerHTML = ""
+
+  updateTotal()
+
+  showAlert("Você limpou sua lista")
 })
 
 
@@ -483,4 +511,31 @@ closeAlert.addEventListener("click", () => {
     alert.classList.add("hidden")
     alert.classList.remove("alert-out")
   }, 500)
+})
+
+shareList.addEventListener("click", async () => {
+  if (items.length === 0) {
+    showAlert("Sua lista está vazia")
+    return
+  }
+
+  const shareLink = createShareLink()
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: "QuickList",
+        text: "Minha lista de compras",
+        url: shareLink
+      })
+    } else {
+      await navigator.clipboard.writeText(shareLink)
+
+      showAlert("Link da lista copiado")
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      showAlert("Não foi possível compartilhar a lista")
+    }
+  }
 })
